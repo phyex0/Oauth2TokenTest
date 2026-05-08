@@ -27,6 +27,7 @@ public class TokenController {
 
     @GetMapping
     @SneakyThrows
+    //TODO: Try to implement SSL into token calls
     public ResponseEntity<TokenResponse> getToken(@RequestParam String userName, @RequestParam String password) {
         // 1. Resolve the "Well-Known" URL to get endpoints
         // Note: Use the base Issuer URL (e.g., https://auth.example.com/realm)
