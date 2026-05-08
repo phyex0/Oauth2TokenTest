@@ -19,11 +19,11 @@ This project demonstrates how to retrieve an OAuth2 Access Token using the **Res
 Run the following command to start Keycloak and its PostgreSQL database:
 
 ```bash
-docker-compose up -d
+docker-compose -f src/main/docker/keycloak.yaml -p docker up -d
 
 ```
 
-* **Admin Console:** `http://localhost:8080`
+* **Admin Console:** `http://localhost:8090`
 * **Username:** `admin`
 * **Password:** `admin`
 
@@ -37,12 +37,12 @@ Before running the code, you must configure Keycloak to allow the "Password" gra
 
 1. Log in to the Admin Console.
 2. Click the **Master** dropdown in the top-left corner and click **Create Realm**.
-3. Name it **`myrealm`** and click **Create**.
+3. Name it **`spring-oauth-test-realm`** and click **Create**.
 
 ### B. Create the Client
 
 1. Go to **Clients** -> **Create client**.
-2. **Client ID:** `myclient`
+2. **Client ID:** `spring-oauth-test-client`
 3. Click **Next**.
 4. **Capability Config:** Toggle **Direct Access Grants** to **ON**. (This enables `grant_type=password`).
 5. Click **Save**.
@@ -50,11 +50,11 @@ Before running the code, you must configure Keycloak to allow the "Password" gra
 ### C. Create and Setup the User
 
 1. Go to **Users** -> **Create new user**.
-2. **Username:** `testuser`
+2. **Username:** `spring-oauth-test-user`
 3. **Required Details (Mandatory):** Fill in **Email**, **First Name**, and **Last Name**. Set **Email Verified** to **On**.
 4. Click **Create**.
 5. Go to the **Credentials** tab -> **Set Password**.
-6. Set password to `password123`.
+6. Set password to `spring-oauth-test-pwd`.
 7. **Toggle "Temporary" to OFF** (This is critical).
 8. Click **Save**.
 
@@ -66,8 +66,8 @@ Update your `application.yml` or `application.properties` to point to your local
 
 ```yaml
 oauth:
-  issureUrl: http://localhost:8080/realms/myrealm
-  clientId: myclient
+  issureUrl: http://localhost:8090/realms/spring-oauth-test-realm
+  clientId: spring-oauth-test-client
 
 ```
 
@@ -82,7 +82,7 @@ Start your Spring Boot application. Once the application is running, trigger the
 Send a `GET` request to your controller:
 
 **URL:**
-`GET http://localhost:8081/token-controller?userName=testuser&password=password123`
+`GET http://localhost:8081/token-controller?userName=spring-oauth-test-user&password=spring-oauth-test-pwd`
 
 ### Expected Response
 
@@ -115,4 +115,4 @@ If successful, you will receive a `200 OK` with the full OAuth2 response. Your c
 
 * **`OauthConfig`**: Holds the Issuer URL and Client ID.
 * **`TokenController`**: Uses Nimbus SDK to resolve metadata and exchange credentials for tokens.
-* **`docker-compose.yml`**: Provisions the local IAM environment.
+* **`docker-compose.yml[keycloak.yaml](src/main/docker/keycloak.yaml)`**: Provisions the local IAM environment.
