@@ -1,0 +1,16 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: Oauth2TokenTest
+
+springdoc:
+  api-docs:
+    enabled: true
+    path: /swagger-ui.html
+
+oauth:
+  client_id: spring-oauth-test-client
+  issure-url: http://localhost:8090/realms/spring-oauth-test-realm
+
