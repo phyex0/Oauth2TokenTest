@@ -41,20 +41,31 @@ Before running the code, you must configure Keycloak to allow the "Password" gra
 
 ### B. Create the Client
 
+#### B.1 Create Grant Access Client
+
 1. Go to **Clients** -> **Create client**.
-2. **Client ID:** `spring-oauth-test-client`
+2. **Client ID:** `client-grant-access`
 3. Click **Next**.
 4. **Capability Config:** Toggle **Direct Access Grants** to **ON**. (This enables `grant_type=password`).
 5. Click **Save**.
 
+#### B.2 Create PKCE Client
+
+1. Go to **Clients** -> **Create client**.
+2. **Client ID:** `client-pkce`
+3. Click **Next**.
+4. **Capability Config:** Toggle **OAuth 2.0 Device Authorization Grand** to **ON**. (This enables `grant_type=authorization_code`).
+5. Under that toggle enable **Require PKCE**
+6. Click **Save**.
+
 ### C. Create and Setup the User
 
 1. Go to **Users** -> **Create new user**.
-2. **Username:** `spring-oauth-test-user`
+2. **Username:** `user`
 3. **Required Details (Mandatory):** Fill in **Email**, **First Name**, and **Last Name**. Set **Email Verified** to **On**.
 4. Click **Create**.
 5. Go to the **Credentials** tab -> **Set Password**.
-6. Set password to `spring-oauth-test-pwd`.
+6. Set password to `pwd`.
 7. **Toggle "Temporary" to OFF** (This is critical).
 8. Click **Save**.
 
@@ -66,9 +77,10 @@ Update your `application.yml` or `application.properties` to point to your local
 
 ```yaml
 oauth:
-  issureUrl: http://localhost:8090/realms/spring-oauth-test-realm
-  clientId: spring-oauth-test-client
-
+  client_id: client-grant-access #grant access
+  client_id2: client-pkce #pkce
+  issuer-url: http://localhost:8090/realms/spring-oauth-test-realm
+  scope: openid
 ```
 
 ---
@@ -82,7 +94,7 @@ Start your Spring Boot application. Once the application is running, trigger the
 Send a `GET` request to your controller:
 
 **URL:**
-`GET http://localhost:8081/token-controller?userName=spring-oauth-test-user&password=spring-oauth-test-pwd`
+`GET http://localhost:8080/token-controller/grant-access-nimbus?userName=user&password=pwd`
 
 ### Expected Response
 
@@ -113,6 +125,7 @@ If successful, you will receive a `200 OK` with the full OAuth2 response. Your c
 
 ## 📂 Project Structure
 
-* **`OauthConfig`**: Holds the Issuer URL and Client ID.
-* **`TokenController`**: Uses Nimbus SDK to resolve metadata and exchange credentials for tokens.
+* **`OauthConfig`**: Holds the Issuer URL, SCOPE and Client ID(s).
+* **`TokenService`**: Uses Nimbus SDK to resolve metadata and exchange credentials for tokens.
+* **`TokenController`**: Uses TokenService to retrieve tokens.
 * **`docker-compose.yml[keycloak.yaml](src/main/docker/keycloak.yaml)`**: Provisions the local IAM environment.

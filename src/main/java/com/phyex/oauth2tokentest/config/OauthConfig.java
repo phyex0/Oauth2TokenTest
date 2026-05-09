@@ -9,5 +9,7 @@ import org.springframework.context.annotation.Configuration;
 @ConfigurationProperties("oauth")
 public class OauthConfig {
     private String clientId;
-    private String issureUrl;
+    private String clientId2;
+    private String issuerUrl;
+    private String[] scope;
 }
