@@ -74,6 +74,7 @@ public class TokenServiceImpl implements TokenService {
 
     @Override
     @SneakyThrows
+    //TODO not valid not usable needs browser redirect
     public TokenResponse getTokenWithPkce(String userName, String password) {
         URI authEndpoint = new URI(oauthConfig.getIssuerUrl() + "/protocol/openid-connect/auth");
         URI tokenEndpoint = new URI(oauthConfig.getIssuerUrl() +"/protocol/openid-connect/token");
