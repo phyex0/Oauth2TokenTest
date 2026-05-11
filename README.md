@@ -129,3 +129,15 @@ If successful, you will receive a `200 OK` with the full OAuth2 response. Your c
 * **`TokenService`**: Uses Nimbus SDK to resolve metadata and exchange credentials for tokens.
 * **`TokenController`**: Uses TokenService to retrieve tokens.
 * **`docker-compose.yml[keycloak.yaml](src/main/docker/keycloak.yaml)`**: Provisions the local IAM environment.
+
+## 📚 Additional Resources
+
+### Types of OAuth2 Grants
+
+* **Authorization Code Grant**: User redirected to Auth Server to authorize with client-id,redirect url. Then  Auth server redirects tp client with code. Then second request to Authorization server with code which provided in previous step, client-id, client-secret and redirect uri to get Token.
+* **Authorization Code with PKCE**: Client creates a code verifier. Then Hash with SHA256 to get code challange.
+* **Resource Owner Password Credentials Grant**: Client provides username and password and client-id server returns tokens.
+* **Client Credentials Grant**: Uses client-id client-secret -> Backend to Backend Recommended.
+* **Refresh Token Grant**: Client provides refresh token, server returns new access token.
+
+For more details, refer to the [OAuth2 documentation](https://oauth.net/2/).

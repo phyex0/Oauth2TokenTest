@@ -1,15 +1,9 @@
 package com.phyex.oauth2tokentest.service;
 
 import com.nimbusds.oauth2.sdk.*;
-import com.nimbusds.oauth2.sdk.auth.ClientSecretBasic;
 import com.nimbusds.oauth2.sdk.auth.Secret;
 import com.nimbusds.oauth2.sdk.id.ClientID;
 import com.nimbusds.oauth2.sdk.id.Issuer;
-import com.nimbusds.oauth2.sdk.id.State;
-import com.nimbusds.oauth2.sdk.pkce.CodeChallenge;
-import com.nimbusds.oauth2.sdk.pkce.CodeChallengeMethod;
-import com.nimbusds.oauth2.sdk.pkce.CodeVerifier;
-import com.nimbusds.openid.connect.sdk.AuthenticationRequest;
 import com.nimbusds.openid.connect.sdk.op.OIDCProviderMetadata;
 import com.phyex.oauth2tokentest.config.OauthConfig;
 import lombok.RequiredArgsConstructor;
@@ -74,55 +68,8 @@ public class TokenServiceImpl implements TokenService {
 
     @Override
     @SneakyThrows
-    //TODO not valid not usable needs browser redirect
     public TokenResponse getTokenWithPkce(String userName, String password) {
-        URI authEndpoint = new URI(oauthConfig.getIssuerUrl() + "/protocol/openid-connect/auth");
-        URI tokenEndpoint = new URI(oauthConfig.getIssuerUrl() +"/protocol/openid-connect/token");
-        ClientID clientID = new ClientID(oauthConfig.getClientId2());
-        URI callback = new URI("http://localhost:8090/callback");
-
-        // --- STEP A: GENERATE PKCE ---
-        // Create a random verifier (the secret)
-        CodeVerifier verifier = new CodeVerifier();
-
-        // Create the challenge (the hash) to send to Keycloak
-        CodeChallenge challenge = CodeChallenge.compute(CodeChallengeMethod.S256, verifier);
-
-        // 2. Build Authorization Request (Send to User's Browser)
-        State state = new State();
-        AuthenticationRequest authRequest = new AuthenticationRequest.Builder(
-                new ResponseType(ResponseType.Value.CODE),
-                new Scope(oauthConfig.getScope()),
-                clientID,
-                callback)
-                .endpointURI(authEndpoint)
-                .state(state)
-                .codeChallenge(challenge, CodeChallengeMethod.S256) // PKCE added here
-                .build();
-
-        System.out.println("Redirect user to: " + authRequest.toURI());
-
-        // --- STEP B: TOKEN EXCHANGE (After user returns with ?code=...) ---
-
-        // Mocking the received code from the callback
-        AuthorizationCode code = new AuthorizationCode("RECEIVED_CODE_FROM_URL");
-
-
-        TokenRequest tokenRequest = new TokenRequest(
-                tokenEndpoint,
-                new ClientSecretBasic(clientID, new Secret("")), // Public clients usually have empty secret
-                new AuthorizationCodeGrant(code, callback, verifier) // Pass verifier here!
-        );
-
-        TokenResponse response = TokenResponse.parse(tokenRequest.toHTTPRequest().send());
-
-        if (response.indicatesSuccess()) {
-            AccessTokenResponse successResponse = response.toSuccessResponse();
-            System.out.println("Access Token: " + successResponse.getTokens().getAccessToken());
-        } else {
-            System.out.println("Error: " + response.toErrorResponse().getErrorObject().getDescription());
-        }
-
-        return response;
+        return null;
     }
+
 }
